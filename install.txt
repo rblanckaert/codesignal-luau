@@ -1,0 +1,24 @@
+#!/bin/bash
+  
+TMP_FILE=$(mktemp -q /tmp/luau.XXXXXX.zip)
+
+wget -L https://github.com/luau-lang/luau/releases/download/0.617/luau-ubuntu.zip -O $TMP_FILE
+
+python3 - << DONE
+
+import zipfile
+
+print("Extracting from $TMP_FILE")
+
+with zipfile.ZipFile("$TMP_FILE", 'r') as zip_ref:
+    zip_ref.extractall("/usr/local/bin")
+
+DONE
+
+
+rm /usr/local/bin/luajit
+chmod +x /usr/local/bin/lua*
+ln -s /usr/local/bin/luau /usr/local/bin/luajit
+
+echo "Installed Luau"
+
